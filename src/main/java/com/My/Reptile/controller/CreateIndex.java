@@ -1,5 +1,5 @@
 package com.My.Reptile.controller;
-
+import com.My.Reptile.controller.utils.MyIkAnalyzer;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.*;
@@ -20,11 +20,14 @@ import java.nio.file.attribute.BasicFileAttributes;
 @SuppressWarnings({ "unchecked", "unused", "rawtypes" })
 public class CreateIndex {
     public static void main(String[] args) throws IOException {
-        String dirPath = "D:/Lucene_data";
-        String indexPath = "D:/Lucene_index";
+        /*豆瓣图书*/
+//        String dirPath = "D:/Lucene_data_Db";
+//        String indexPath = "D:/Lucene_index_Db";
+        /*zol的新闻*/
+        String dirPath = "D:/Lucene_data_Zol";
+        String indexPath = "D:/Lucene_index_Zol";
         createIndex(dirPath, indexPath);
     }
-
     /**
      * 创建索引 
      * @param dirPath       需要读取的文件所在文件目录 
@@ -34,7 +37,6 @@ public class CreateIndex {
     public static void createIndex(String dirPath, String indexPath) throws IOException {
         createIndex(dirPath, indexPath, false);
     }
-
     /**
      * 创建索引 
      * @param dirPath         需要读取的文件所在文件目录 
@@ -42,12 +44,12 @@ public class CreateIndex {
      * @param createOrAppend  始终重建索引/不存在则追加索引 
      * @throws IOException
      */
-    public static void createIndex(String dirPath, String indexPath,
-                                   boolean createOrAppend) throws IOException {
+    public static void createIndex(String dirPath, String indexPath, boolean createOrAppend) throws IOException {
         long start = System.currentTimeMillis();//开始时间
         Directory dir = FSDirectory.open(Paths.get(indexPath, new String[0]));//从索引路径拿到Dir对象
         Path docDirPath = Paths.get(dirPath, new String[0]);//从文件路径拿到Path对象
-        Analyzer analyzer = new StandardAnalyzer();//标准分词器
+//        Analyzer analyzer = new StandardAnalyzer();//标准分词器
+        Analyzer analyzer = new MyIkAnalyzer();//使用IK中文分词器
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);//根据分词器实例化索引生成的配置
 
         if (createOrAppend) {
@@ -70,8 +72,7 @@ public class CreateIndex {
      *            文件路径 
      * @throws IOException
      */
-    public static void indexDocs(final IndexWriter writer, Path path)
-            throws IOException {
+    public static void indexDocs(final IndexWriter writer, Path path) throws IOException {
         // 如果是目录，查找目录下的文件  
         if (Files.isDirectory(path, new LinkOption[0])) {
             System.out.println("directory");
@@ -91,7 +92,6 @@ public class CreateIndex {
                             .toMillis());
         }
     }
-
     /**
      * 读取文件创建索引 
      *
@@ -108,14 +108,13 @@ public class CreateIndex {
         InputStream stream = Files.newInputStream(file, new OpenOption[0]);//打开流
         Document doc = new Document();//实例化索引Doc对象
 
-        Field pathField = new StringField("path", file.toString(),
-                Field.Store.YES);
-        doc.add(pathField);
+        Field pathField = new StringField("path", file.toString(), Field.Store.YES);
 
+        doc.add(pathField);
         doc.add(new LongPoint("modified", lastModified));
         doc.add(new TextField("contents", new BufferedReader(
                 new InputStreamReader(stream, StandardCharsets.UTF_8))));
-
+//        System.out.println(new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8)));
         if (writer.getConfig().getOpenMode() == IndexWriterConfig.OpenMode.CREATE) {
             System.out.println("adding " + file);
             writer.addDocument(doc);

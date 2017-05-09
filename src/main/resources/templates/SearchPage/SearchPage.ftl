@@ -26,6 +26,36 @@
     <script type="text/javascript" src="/js/jquery.simplePagination.js"></script>
     <!--[endif]-->
 </head>
+
+<script type="text/javascript">
+$(function () {
+
+    /*调整下拉框选定状态*/
+    $("#searchTypeParam option").each(function () {
+        console.log('${Type!}')
+        if($(this).val() == '${Type!}'){
+            $(this).attr("selected",true);
+        }
+
+    })
+
+    /*进行ajax第一页更新加载的函数方法*/
+    ajaxUpdate(1)
+
+})
+
+function ajaxUpdate(pageIndex) {
+    console.log($("#searchInput").val())
+    $.ajax({
+        url:"/Search/AjaxPage.html?Type=" + $("#searchTypeParam option:selected").val() + "&ParamQ=" + $("#searchInput").val() + '&pageIndex=' + pageIndex,
+        type:"GET",
+        success:function (result) {
+            $("#ajaxUpdate").html(result)
+        }
+    })
+}
+</script>
+
 <body>
 <!--header starts-->
 <header class="main-header">
@@ -42,16 +72,16 @@
                                     <span class="icon-bar"></span>
                                     <span class="icon-bar"></span>
                                 </button>
-                                <a class="navbar-brand" href="#"><span class="grey">Wolf</span>Eagle</a>
+                                <a class="navbar-brand" href="/"><span class="grey">Wolf</span>Eagle</a>
                             </div>
                             <div class="collapse navbar-collapse navbar-right" id="myNavbar">
                                 <ul class="nav navbar-nav">
-                                    <li class="active"><a href="#"><h3>我</h3></a></li>
-                                    <li><a href="#listed"><h3>知</h3></a></li>
-                                    <li><a href="#agents"><h3>道</h3></a></li>
-                                    <li><a href="#gallery"><h3>你</h3></a></li>
-                                    <li><a href="#news"><h3>想</h3></a></li>
-                                    <li><a href="#contact"><h3>要</h3></a></li>
+                                    <li class="active"><a href="/"><h3>我</h3></a></li>
+                                    <li><a href="/"><h3>知</h3></a></li>
+                                    <li><a href="/"><h3>道</h3></a></li>
+                                    <li><a href="/"><h3>你</h3></a></li>
+                                    <li><a href="/"><h3>想</h3></a></li>
+                                    <li><a href="/"><h3>要</h3></a></li>
                                 </ul>
                             </div>
                         </nav>
@@ -68,17 +98,18 @@
                     </div>
                     <div class="banner-heading text-center">
                     </div>
+
                     <div class="banner-search col-md-offset-1 col-md-10 col-md-offset-1">
-                        <form action="/Search/ParamPage.html" type="GET">
+                        <form action="/Search/ParamPage.html" type="POST">
                             <div class="col-md-3">
                                 <select class="form-control sellone" name="type" id="searchTypeParam">
-                                    <option value="news">新闻</option>
-                                    <option value="al">铝业</option>
+                                    <option value="News">新闻</option>
+                                    <option value="Db">书籍</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <input type="text" class="form-control selltwo" name="q" id="searchInput" placeholder="现在，把你想要的告诉我">
+                                    <input type="text" class="form-control selltwo" name="ParamQ" id="searchInput" placeholder="现在，把你想要的告诉我" value="${ParamQ!}">
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -88,18 +119,8 @@
                             </div>
                         </form>
                     </div>
-
-                    <div class="col-md-offset-1 col-md-10 col-md-offset-1">
-                        <ul>
-                        <#list list as l>
-                            <li>
-                                <h2><a href="${l.enterpriseUrl!}">${l.enterpriseName!}</a></h2>
-                            ${l.enterpriseProfile!}
-                            </li>
-                        </#list>
-                        </ul>
+                    <div id="ajaxUpdate">
                     </div>
-
                 </div>
             </div>
         </div>
@@ -113,7 +134,7 @@
                 <div class="footer-sec text-center">
                     <h2>爱上我们 ?</h2>
                     <p>马上推荐小伙伴们一起使用狼鹰！</p>
-                    <a href="#"><span>现在就开始！</span></a>
+                    <a href="/"><span>现在就开始！</span></a>
                 </div>
             </div>
         </div>

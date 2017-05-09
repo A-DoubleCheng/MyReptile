@@ -4,7 +4,7 @@
 	padding: 0px;
 }
 body {
-	color:#6F7478;
+	color:#CCC;
 	font-family: 'Open Sans', sans-serif;
 	font-size: 16px;
 	font-weight: 300;
@@ -16,7 +16,7 @@ ul, li, a
 }
 a
 {
-	color: rgba(248, 75, 74, 0.72);
+	color: white;
 	text-decoration: none;
 }
 a:hover

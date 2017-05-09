@@ -8,7 +8,7 @@ public class SearchParam {
 
     private String type;
 
-    private String q;
+    private String ParamQ;
 
     public String getIndexDir() {
         return indexDir;
@@ -26,11 +26,11 @@ public class SearchParam {
         this.type = type;
     }
 
-    public String getQ() {
-        return q;
+    public String getParamQ() {
+        return ParamQ;
     }
 
-    public void setQ(String q) {
-        this.q = q;
+    public void setParamQ(String paramQ) {
+        ParamQ = paramQ;
     }
 }
